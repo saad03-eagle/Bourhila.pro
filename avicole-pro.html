@@ -1,0 +1,1551 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0a0e27">
+    <title>Avicole Pro - Coprogal/Galipro</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Chart.js for Analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        /* === CYBERPUNK GLASSMORPHISM CORE === */
+        :root {
+            --deep-space: #0a0e27;
+            --neon-cyan: #00d4ff;
+            --royal-purple: #7b2cbf;
+            --alert-red: #ff0055;
+            --success-green: #00ff88;
+            --glass-bg: rgba(10, 14, 39, 0.7);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, var(--deep-space) 0%, #1a1147 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* Animated Background Grid */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 212, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 212, 255, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+        
+        /* Glass Card Component */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+        
+        .glass-card:hover::before {
+            left: 100%;
+        }
+        
+        /* Glowing Border Animations */
+        .glow-green {
+            animation: glowGreen 2s ease-in-out infinite;
+            border-color: var(--success-green);
+        }
+        
+        .glow-red {
+            animation: glowRed 1s ease-in-out infinite;
+            border-color: var(--alert-red);
+        }
+        
+        @keyframes glowGreen {
+            0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 136, 0.5); }
+            50% { box-shadow: 0 0 40px rgba(0, 255, 136, 0.8); }
+        }
+        
+        @keyframes glowRed {
+            0%, 100% { box-shadow: 0 0 30px rgba(255, 0, 85, 0.7); }
+            50% { box-shadow: 0 0 60px rgba(255, 0, 85, 1); }
+        }
+        
+        /* 3D Floating Icons */
+        .icon-3d {
+            filter: drop-shadow(0 0 10px var(--neon-cyan));
+            transition: transform 0.3s, filter 0.3s;
+        }
+        
+        .icon-3d:hover {
+            transform: translateY(-5px) scale(1.1);
+            filter: drop-shadow(0 0 20px var(--neon-cyan));
+        }
+        
+        /* Neon Button */
+        .neon-btn {
+            background: linear-gradient(135deg, var(--neon-cyan), var(--royal-purple));
+            border: none;
+            border-radius: 16px;
+            padding: 16px 32px;
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+        }
+        
+        .neon-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 40px rgba(0, 212, 255, 0.6);
+        }
+        
+        .neon-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .neon-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            filter: grayscale(1);
+        }
+        
+        /* Input Cyberpunk Style */
+        .cyber-input {
+            background: rgba(0, 212, 255, 0.05);
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-radius: 12px;
+            padding: 14px 18px;
+            color: white;
+            font-size: 16px;
+            width: 100%;
+            transition: all 0.3s;
+        }
+        
+        .cyber-input:focus {
+            outline: none;
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+            background: rgba(0, 212, 255, 0.1);
+        }
+        
+        .cyber-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+        
+        /* Thermal Alert Pulse */
+        @keyframes thermalAlert {
+            0%, 100% { 
+                background: rgba(255, 0, 85, 0.2);
+                border-color: var(--alert-red);
+            }
+            50% { 
+                background: rgba(255, 0, 85, 0.4);
+                border-color: #ff3377;
+            }
+        }
+        
+        .thermal-alert {
+            animation: thermalAlert 0.8s ease-in-out infinite;
+        }
+        
+        /* Module Navigation */
+        .module-nav {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .module-btn {
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-radius: 16px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .module-btn:hover {
+            border-color: var(--neon-cyan);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+        }
+        
+        .module-btn.active {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(123, 44, 191, 0.2));
+            border-color: var(--neon-cyan);
+        }
+        
+        /* Progress Bar */
+        .progress-bar {
+            height: 8px;
+            background: rgba(0, 212, 255, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 16px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--neon-cyan), var(--royal-purple));
+            transition: width 0.5s ease;
+            box-shadow: 0 0 10px var(--neon-cyan);
+        }
+        
+        /* Rank Entry Grid */
+        .rank-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin: 16px 0;
+        }
+        
+        /* Camera Preview */
+        .camera-preview {
+            width: 100%;
+            max-height: 300px;
+            border-radius: 16px;
+            object-fit: cover;
+            border: 2px solid var(--neon-cyan);
+        }
+        
+        /* Hidden Elements */
+        .hidden { display: none; }
+        
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+            padding: 24px;
+        }
+        
+        .logo-text {
+            font-size: 32px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--neon-cyan), var(--royal-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+            text-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+        }
+        
+        /* Stats Card */
+        .stat-card {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(123, 44, 191, 0.1));
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--neon-cyan);
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 4px;
+        }
+        
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 2px solid var(--success-green);
+            border-radius: 16px;
+            padding: 16px 24px;
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.4);
+            transform: translateX(400px);
+            transition: transform 0.3s;
+            z-index: 1000;
+        }
+        
+        .toast.show {
+            transform: translateX(0);
+        }
+        
+        /* PIN Pad */
+        .pin-pad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            max-width: 300px;
+            margin: 24px auto;
+        }
+        
+        .pin-btn {
+            background: rgba(0, 212, 255, 0.1);
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-radius: 50%;
+            width: 70px;
+            height: 70px;
+            font-size: 24px;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .pin-btn:hover {
+            background: rgba(0, 212, 255, 0.2);
+            border-color: var(--neon-cyan);
+            transform: scale(1.05);
+        }
+        
+        .pin-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .pin-display {
+            text-align: center;
+            font-size: 32px;
+            letter-spacing: 16px;
+            margin: 24px 0;
+            min-height: 50px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Login Screen -->
+        <div id="loginScreen">
+            <div class="header">
+                <h1 class="logo-text">🐔 AVICOLE PRO</h1>
+                <p style="color: rgba(255,255,255,0.6);">Coprogal/Galipro Digital Platform</p>
+            </div>
+            
+            <div class="glass-card" style="max-width: 400px; margin: 0 auto; padding: 40px;">
+                <div style="text-align: center; margin-bottom: 24px;">
+                    <i data-lucide="lock-keyhole" style="width: 64px; height: 64px; color: var(--neon-cyan);"></i>
+                </div>
+                
+                <h2 style="text-align: center; margin-bottom: 8px;">Connexion Sécurisée</h2>
+                <p style="text-align: center; color: rgba(255,255,255,0.6); margin-bottom: 32px;">
+                    Entrez votre code PIN à 6 chiffres
+                </p>
+                
+                <div class="pin-display" id="pinDisplay">●●●●●●</div>
+                
+                <div class="pin-pad">
+                    <button class="pin-btn" onclick="enterPin('1')">1</button>
+                    <button class="pin-btn" onclick="enterPin('2')">2</button>
+                    <button class="pin-btn" onclick="enterPin('3')">3</button>
+                    <button class="pin-btn" onclick="enterPin('4')">4</button>
+                    <button class="pin-btn" onclick="enterPin('5')">5</button>
+                    <button class="pin-btn" onclick="enterPin('6')">6</button>
+                    <button class="pin-btn" onclick="enterPin('7')">7</button>
+                    <button class="pin-btn" onclick="enterPin('8')">8</button>
+                    <button class="pin-btn" onclick="enterPin('9')">9</button>
+                    <button class="pin-btn" onclick="clearPin()" style="background: rgba(255, 0, 85, 0.2);">
+                        <i data-lucide="delete"></i>
+                    </button>
+                    <button class="pin-btn" onclick="enterPin('0')">0</button>
+                    <button class="pin-btn" onclick="submitPin()" style="background: rgba(0, 255, 136, 0.2);">
+                        <i data-lucide="check"></i>
+                    </button>
+                </div>
+                
+                <p style="text-align: center; margin-top: 24px; font-size: 12px; color: rgba(255,255,255,0.4);">
+                    PIN par défaut: 123456 (Technicien) | 000000 (Admin)
+                </p>
+            </div>
+        </div>
+        
+        <!-- Main Dashboard -->
+        <div id="dashboard" class="hidden">
+            <!-- Header -->
+            <div class="header">
+                <h1 class="logo-text">🐔 AVICOLE PRO</h1>
+                <p style="color: rgba(255,255,255,0.8);">Bienvenue, <span id="userName">Technicien</span></p>
+                <button onclick="logout()" class="neon-btn" style="margin-top: 16px; padding: 8px 24px; font-size: 14px;">
+                    <i data-lucide="log-out" style="width: 16px; height: 16px;"></i> Déconnexion
+                </button>
+            </div>
+            
+            <!-- Module Navigation -->
+            <div class="module-nav">
+                <div class="module-btn active" onclick="switchModule('mortalite')">
+                    <i data-lucide="skull" class="icon-3d" style="width: 40px; height: 40px; margin-bottom: 8px;"></i>
+                    <div style="font-weight: 600;">Mortalité 12-Rangs</div>
+                </div>
+                
+                <div class="module-btn" onclick="switchModule('environnemental')">
+                    <i data-lucide="thermometer" class="icon-3d" style="width: 40px; height: 40px; margin-bottom: 8px;"></i>
+                    <div style="font-weight: 600;">Environnemental</div>
+                </div>
+                
+                <div class="module-btn" onclick="switchModule('stock')">
+                    <i data-lucide="warehouse" class="icon-3d" style="width: 40px; height: 40px; margin-bottom: 8px;"></i>
+                    <div style="font-weight: 600;">Stock & Silo</div>
+                </div>
+                
+                <div class="module-btn" onclick="switchModule('production')">
+                    <i data-lucide="egg" class="icon-3d" style="width: 40px; height: 40px; margin-bottom: 8px;"></i>
+                    <div style="font-weight: 600;">Production Œufs</div>
+                </div>
+                
+                <div class="module-btn" onclick="switchModule('analytics')" id="analyticsBtn" style="display: none;">
+                    <i data-lucide="bar-chart-3" class="icon-3d" style="width: 40px; height: 40px; margin-bottom: 8px;"></i>
+                    <div style="font-weight: 600;">Analytics</div>
+                </div>
+            </div>
+            
+            <!-- Module: Mortalité 12-Rangs -->
+            <div id="modulemortalite" class="glass-card" style="padding: 32px;">
+                <h2 style="margin-bottom: 24px; display: flex; align-items: center; gap: 12px;">
+                    <i data-lucide="skull" style="color: var(--alert-red);"></i>
+                    Mortalité 12-Rangs (Anti-Cheat System)
+                </h2>
+                
+                <div class="progress-bar">
+                    <div class="progress-fill" id="mortaliteProgress" style="width: 0%;"></div>
+                </div>
+                <p style="text-align: center; margin-bottom: 24px; color: rgba(255,255,255,0.7);">
+                    Rang <span id="currentRank">1</span> / 12
+                </p>
+                
+                <div class="rank-grid">
+                    <div>
+                        <label style="display: block; margin-bottom: 8px; color: rgba(255,255,255,0.8);">Normal</label>
+                        <input type="number" class="cyber-input" id="mortaliteNormal" min="0" value="0" onchange="checkMortaliteInputs()">
+                    </div>
+                    
+                    <div>
+                        <label style="display: block; margin-bottom: 8px; color: rgba(255,255,255,0.8);">Ancien</label>
+                        <input type="number" class="cyber-input" id="mortaliteAncien" min="0" value="0" onchange="checkMortaliteInputs()">
+                    </div>
+                    
+                    <div>
+                        <label style="display: block; margin-bottom: 8px; color: rgba(255,255,255,0.8);">Restes</label>
+                        <input type="number" class="cyber-input" id="mortaliteRestes" min="0" value="0" onchange="checkMortaliteInputs()">
+                    </div>
+                    
+                    <div>
+                        <label style="display: block; margin-bottom: 8px; color: rgba(255,255,255,0.8);">Accident</label>
+                        <input type="number" class="cyber-input" id="mortaliteAccident" min="0" value="0" onchange="checkMortaliteInputs()">
+                    </div>
+                </div>
+                
+                <div style="margin-top: 24px; padding: 16px; background: rgba(0, 212, 255, 0.1); border-radius: 12px;">
+                    <div style="display: flex; justify-content: space-between;">
+                        <span>Total Rang Actuel:</span>
+                        <span style="font-weight: 700; color: var(--neon-cyan);" id="rankTotal">0</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-top: 8px;">
+                        <span>Total Cumulé:</span>
+                        <span style="font-weight: 700; color: var(--royal-purple);" id="cumulativeTotal">0</span>
+                    </div>
+                </div>
+                
+                <button class="neon-btn" id="nextRankBtn" onclick="nextRank()" disabled style="width: 100%; margin-top: 24px;">
+                    Suivant (Rang <span id="nextRankNumber">2</span>)
+                </button>
+                
+                <div id="mortaliteSummary" class="hidden" style="margin-top: 24px; padding: 20px; background: rgba(0, 255, 136, 0.1); border-radius: 12px; border: 2px solid var(--success-green);">
+                    <h3 style="margin-bottom: 16px; color: var(--success-green);">✓ Saisie Complète - 12 Rangs Validés</h3>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+                        <div>
+                            <div style="color: rgba(255,255,255,0.7);">Total Normal:</div>
+                            <div style="font-size: 24px; font-weight: 700;" id="summaryNormal">0</div>
+                        </div>
+                        <div>
+                            <div style="color: rgba(255,255,255,0.7);">Total Ancien:</div>
+                            <div style="font-size: 24px; font-weight: 700;" id="summaryAncien">0</div>
+                        </div>
+                        <div>
+                            <div style="color: rgba(255,255,255,0.7);">Total Restes:</div>
+                            <div style="font-size: 24px; font-weight: 700;" id="summaryRestes">0</div>
+                        </div>
+                        <div>
+                            <div style="color: rgba(255,255,255,0.7);">Total Accident:</div>
+                            <div style="font-size: 24px; font-weight: 700;" id="summaryAccident">0</div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.2);">
+                        <div style="display: flex; justify-content: space-between; font-size: 20px; font-weight: 700;">
+                            <span>TOTAL MORTALITÉ:</span>
+                            <span style="color: var(--neon-cyan);" id="grandTotal">0</span>
+                        </div>
+                    </div>
+                    <button class="neon-btn" onclick="resetMortalite()" style="width: 100%; margin-top: 16px; background: rgba(255, 0, 85, 0.3);">
+                        Nouvelle Saisie
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Module: Environnemental AI Guard -->
+            <div id="moduleenvironnemental" class="glass-card hidden" style="padding: 32px;">
+                <h2 style="margin-bottom: 24px; display: flex; align-items: center; gap: 12px;">
+                    <i data-lucide="thermometer" style="color: var(--neon-cyan);"></i>
+                    Environnemental AI Guard
+                </h2>
+                
+                <div id="thermalAlertBanner" class="hidden" style="padding: 20px; background: rgba(255, 0, 85, 0.3); border: 2px solid var(--alert-red); border-radius: 12px; margin-bottom: 24px; animation: thermalAlert 0.8s infinite;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <i data-lucide="alert-triangle" style="width: 32px; height: 32px; color: var(--alert-red);"></i>
+                        <div>
+                            <div style="font-weight: 700; font-size: 18px;">⚠️ ALERTE TEMPÉRATURE CRITIQUE!</div>
+                            <div style="font-size: 14px; margin-top: 4px;">Température > 30°C détectée</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="rank-grid">
+                    <div>
+                        <label style="display: block; margin-bottom: 8px; color: rgba(255,255,255,0.8);">
+                            <i data-lucide="thermometer-snowflake" style="width: 16px; height: 16px;"></i> Int. Min (°C)
+                        </label>
+                        <input type="number" class="cyber-input" id="tempIntMin" step="0.1" onchange="checkTemperature()">
+                    </div>
+                    
+                    <div>
+                        <label style="display: block; margin-bottom: 8px; color: rgba(255,255,255,0.8);">
+                            <i data-lucide="thermometer-sun" style="width: 16px; height: 16px;"></i> Int. Max (°C)
+                        </label>
+                        <input type="number" class="cyber-input" id="tempIntMax" step="0.1" onchange="checkTemperature()">
+                    </div>
+                    
+                    <div>
+                        <label style="display: block; margin-bottom: 8px; color: rgba(255,255,255,0.8);">
+                            <i data-lucide="cloud-snow" style="width: 16px; height: 16px;"></i> Ext. Min (°C)
+                        </label>
+                        <input type="number" class="cyber-input" id="tempExtMin" step="0.1" onchange="checkTemperature()">
+                    </div>
+                    
+                    <div>
+                        <label style="display: block; margin-bottom: 8px; color: rgba(255,255,255,0.8);">
+                            <i data-lucide="sun" style="width: 16px; height: 16px;"></i> Ext. Max (°C)
+                        </label>
+                        <input type="number" class="cyber-input" id="tempExtMax" step="0.1" onchange="checkTemperature()">
+                    </div>
+                </div>
+                
+                <div style="margin-top: 24px;">
+                    <label style="display: block; margin-bottom: 8px; color: rgba(255,255,255,0.8);">
+                        <i data-lucide="droplet" style="width: 16px; height: 16px;"></i> Humidité (%)
+                    </label>
+                    <input type="number" class="cyber-input" id="humidity" min="0" max="100">
+                </div>
+                
+                <button class="neon-btn" onclick="saveEnvironnemental()" style="width: 100%; margin-top: 24px;">
+                    Enregistrer Données Environnementales
+                </button>
+            </div>
+            
+            <!-- Module: Stock & Silo Vision -->
+            <div id="modulestock" class="glass-card hidden" style="padding: 32px;">
+                <h2 style="margin-bottom: 24px; display: flex; align-items: center; gap: 12px;">
+                    <i data-lucide="warehouse" style="color: var(--royal-purple);"></i>
+                    Stock & Silo Vision
+                </h2>
+                
+                <div style="display: grid; gap: 24px;">
+                    <!-- Silo 1 -->
+                    <div class="glass-card" style="padding: 24px;">
+                        <h3 style="margin-bottom: 16px; color: var(--neon-cyan);">Silo 1</h3>
+                        
+                        <div class="rank-grid">
+                            <div>
+                                <label style="display: block; margin-bottom: 8px;">Niveau (%)</label>
+                                <input type="number" class="cyber-input" id="silo1Level" min="0" max="100">
+                            </div>
+                            <div>
+                                <label style="display: block; margin-bottom: 8px;">Quantité (kg)</label>
+                                <input type="number" class="cyber-input" id="silo1Quantity">
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 16px;">
+                            <label style="display: block; margin-bottom: 8px;">
+                                <i data-lucide="camera" style="width: 16px; height: 16px;"></i> Photo Vérification
+                                <span style="color: var(--alert-red);">*</span>
+                            </label>
+                            <input type="file" accept="image/*" capture="environment" id="silo1Photo" onchange="previewPhoto('silo1')" 
+                                   style="display: none;">
+                            <button class="neon-btn" onclick="document.getElementById('silo1Photo').click()" style="width: 100%;">
+                                📸 Prendre Photo Silo 1
+                            </button>
+                            <img id="silo1Preview" class="camera-preview hidden" style="margin-top: 12px;">
+                        </div>
+                    </div>
+                    
+                    <!-- Silo 2 -->
+                    <div class="glass-card" style="padding: 24px;">
+                        <h3 style="margin-bottom: 16px; color: var(--neon-cyan);">Silo 2</h3>
+                        
+                        <div class="rank-grid">
+                            <div>
+                                <label style="display: block; margin-bottom: 8px;">Niveau (%)</label>
+                                <input type="number" class="cyber-input" id="silo2Level" min="0" max="100">
+                            </div>
+                            <div>
+                                <label style="display: block; margin-bottom: 8px;">Quantité (kg)</label>
+                                <input type="number" class="cyber-input" id="silo2Quantity">
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 16px;">
+                            <label style="display: block; margin-bottom: 8px;">
+                                <i data-lucide="camera" style="width: 16px; height: 16px;"></i> Photo Vérification
+                                <span style="color: var(--alert-red);">*</span>
+                            </label>
+                            <input type="file" accept="image/*" capture="environment" id="silo2Photo" onchange="previewPhoto('silo2')"
+                                   style="display: none;">
+                            <button class="neon-btn" onclick="document.getElementById('silo2Photo').click()" style="width: 100%;">
+                                📸 Prendre Photo Silo 2
+                            </button>
+                            <img id="silo2Preview" class="camera-preview hidden" style="margin-top: 12px;">
+                        </div>
+                    </div>
+                    
+                    <!-- Water Meter -->
+                    <div class="glass-card" style="padding: 24px;">
+                        <h3 style="margin-bottom: 16px; color: var(--neon-cyan);">Compteur d'Eau</h3>
+                        
+                        <div>
+                            <label style="display: block; margin-bottom: 8px;">Consommation (L)</label>
+                            <input type="number" class="cyber-input" id="waterConsumption">
+                        </div>
+                        
+                        <div style="margin-top: 16px;">
+                            <label style="display: block; margin-bottom: 8px;">
+                                <i data-lucide="camera" style="width: 16px; height: 16px;"></i> Photo Compteur
+                                <span style="color: var(--alert-red);">*</span>
+                            </label>
+                            <input type="file" accept="image/*" capture="environment" id="waterPhoto" onchange="previewPhoto('water')"
+                                   style="display: none;">
+                            <button class="neon-btn" onclick="document.getElementById('waterPhoto').click()" style="width: 100%;">
+                                📸 Prendre Photo Compteur
+                            </button>
+                            <img id="waterPreview" class="camera-preview hidden" style="margin-top: 12px;">
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="neon-btn" id="saveStockBtn" onclick="saveStock()" disabled style="width: 100%; margin-top: 24px;">
+                    Enregistrer Stock & Photos
+                </button>
+                
+                <p style="text-align: center; margin-top: 12px; font-size: 12px; color: rgba(255,255,255,0.5);">
+                    Les 3 photos sont obligatoires pour validation
+                </p>
+            </div>
+            
+            <!-- Module: Production d'Œufs -->
+            <div id="moduleproduction" class="glass-card hidden" style="padding: 32px;">
+                <h2 style="margin-bottom: 24px; display: flex; align-items: center; gap: 12px;">
+                    <i data-lucide="egg" style="color: var(--success-green);"></i>
+                    Production d'Œufs Pro
+                </h2>
+                
+                <div class="rank-grid">
+                    <div>
+                        <label style="display: block; margin-bottom: 8px;">
+                            <i data-lucide="check-circle" style="width: 16px; height: 16px; color: var(--success-green);"></i> Bons
+                        </label>
+                        <input type="number" class="cyber-input" id="eggsBons" min="0" value="0" onchange="calculateEggs()">
+                    </div>
+                    
+                    <div>
+                        <label style="display: block; margin-bottom: 8px;">
+                            <i data-lucide="x-circle" style="width: 16px; height: 16px; color: var(--alert-red);"></i> Cassés
+                        </label>
+                        <input type="number" class="cyber-input" id="eggsCasses" min="0" value="0" onchange="calculateEggs()">
+                    </div>
+                    
+                    <div>
+                        <label style="display: block; margin-bottom: 8px;">
+                            <i data-lucide="circle" style="width: 16px; height: 16px;"></i> Blancs
+                        </label>
+                        <input type="number" class="cyber-input" id="eggsBlancs" min="0" value="0" onchange="calculateEggs()">
+                    </div>
+                    
+                    <div>
+                        <label style="display: block; margin-bottom: 8px;">
+                            <i data-lucide="trash-2" style="width: 16px; height: 16px;"></i> Déchets
+                        </label>
+                        <input type="number" class="cyber-input" id="eggsDechets" min="0" value="0" onchange="calculateEggs()">
+                    </div>
+                </div>
+                
+                <div style="margin-top: 32px; padding: 24px; background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(123, 44, 191, 0.1)); border-radius: 16px;">
+                    <h3 style="margin-bottom: 16px; color: var(--neon-cyan);">Conversion Automatique</h3>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+                        <div class="stat-card">
+                            <div class="stat-value" id="totalEggs">0</div>
+                            <div class="stat-label">Total Œufs</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-value" id="plateaux">0</div>
+                            <div class="stat-label">Plateaux (30)</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <div class="stat-value" id="cartons">0</div>
+                            <div class="stat-label">Cartons (12×30)</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 16px; padding: 12px; background: rgba(0, 255, 136, 0.1); border-radius: 8px;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <span>Taux de Production:</span>
+                            <span style="font-weight: 700; color: var(--success-green);" id="productionRate">0%</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="neon-btn" onclick="saveProduction()" style="width: 100%; margin-top: 24px;">
+                    Enregistrer Production
+                </button>
+            </div>
+            
+            <!-- Module: Analytics (Admin Only) -->
+            <div id="moduleanalytics" class="glass-card hidden" style="padding: 32px;">
+                <h2 style="margin-bottom: 24px; display: flex; align-items: center; gap: 12px;">
+                    <i data-lucide="bar-chart-3" style="color: var(--royal-purple);"></i>
+                    Analytics Dashboard
+                </h2>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 32px;">
+                    <div class="stat-card">
+                        <div class="stat-value" id="avgMortality">0</div>
+                        <div class="stat-label">Mortalité Moyenne</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-value" id="avgTemp">0°C</div>
+                        <div class="stat-label">Température Moyenne</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-value" id="avgProduction">0</div>
+                        <div class="stat-label">Production Moyenne</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-value" id="fcrValue">0.00</div>
+                        <div class="stat-label">FCR (Feed Conversion)</div>
+                    </div>
+                </div>
+                
+                <div class="glass-card" style="padding: 24px; margin-bottom: 24px;">
+                    <h3 style="margin-bottom: 16px;">Courbe de Mortalité (7 derniers jours)</h3>
+                    <canvas id="mortalityChart" style="max-height: 300px;"></canvas>
+                </div>
+                
+                <div class="glass-card" style="padding: 24px;">
+                    <h3 style="margin-bottom: 16px;">Tendance de Production</h3>
+                    <canvas id="productionChart" style="max-height: 300px;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <i data-lucide="check-circle" style="color: var(--success-green);"></i>
+            <span id="toastMessage">Données enregistrées avec succès!</span>
+        </div>
+    </div>
+    
+    <!-- Audio for Thermal Alert -->
+    <audio id="alertSound" style="display: none;">
+        <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBTGH0fPTgjMGHm7A7+OZQQ8PW6ro7K9cGAg+leHyvmoiBjCC0fPTgjMGHm7A7+OZQQ8PW6ro7K9cGAg+leHyvmoiBjCC0fPTgjMGHm7A7+OZQQ8PW6ro7K9cGAg+leHyvmoiBjCC0fPTgjMGHm7A7+OZQQ8PW6ro7K9cGAg+leHyvmoiBjCC0fPTgjMGHm7A7+OZ" type="audio/wav">
+    </audio>
+    
+    <script>
+        // ===================================================================
+        // INDUSTRIAL LOGIC - AVICOLE PRO SYSTEM
+        // ===================================================================
+        
+        // Initialize Lucide Icons
+        lucide.createIcons();
+        
+        // ===================================================================
+        // AUTHENTICATION SYSTEM (Biometric-Style PIN)
+        // ===================================================================
+        
+        let pinInput = '';
+        const PINS = {
+            '123456': { role: 'technician', name: 'Technicien' },
+            '000000': { role: 'admin', name: 'Administrateur' }
+        };
+        
+        let currentUser = null;
+        
+        function enterPin(digit) {
+            if (pinInput.length < 6) {
+                pinInput += digit;
+                updatePinDisplay();
+                
+                // Haptic feedback simulation
+                if (navigator.vibrate) {
+                    navigator.vibrate(10);
+                }
+                
+                // Auto-submit when 6 digits entered
+                if (pinInput.length === 6) {
+                    setTimeout(submitPin, 300);
+                }
+            }
+        }
+        
+        function clearPin() {
+            pinInput = '';
+            updatePinDisplay();
+            if (navigator.vibrate) {
+                navigator.vibrate(20);
+            }
+        }
+        
+        function updatePinDisplay() {
+            const display = document.getElementById('pinDisplay');
+            let dots = '';
+            for (let i = 0; i < 6; i++) {
+                if (i < pinInput.length) {
+                    dots += '●';
+                } else {
+                    dots += '○';
+                }
+            }
+            display.textContent = dots;
+        }
+        
+        function submitPin() {
+            const user = PINS[pinInput];
+            
+            if (user) {
+                currentUser = user;
+                document.getElementById('userName').textContent = user.name;
+                
+                // Show analytics for admin
+                if (user.role === 'admin') {
+                    document.getElementById('analyticsBtn').style.display = 'block';
+                }
+                
+                // Successful login animation
+                document.getElementById('loginScreen').style.transition = 'opacity 0.5s, transform 0.5s';
+                document.getElementById('loginScreen').style.opacity = '0';
+                document.getElementById('loginScreen').style.transform = 'scale(0.9)';
+                
+                setTimeout(() => {
+                    document.getElementById('loginScreen').classList.add('hidden');
+                    document.getElementById('dashboard').classList.remove('hidden');
+                    
+                    // Voice feedback
+                    speak(`Bienvenue ${user.name}`);
+                    
+                    // Initialize charts if admin
+                    if (user.role === 'admin') {
+                        setTimeout(initializeCharts, 500);
+                    }
+                }, 500);
+                
+            } else {
+                // Wrong PIN - shake animation
+                const pinDisplay = document.getElementById('pinDisplay');
+                pinDisplay.style.animation = 'shake 0.5s';
+                pinDisplay.style.color = 'var(--alert-red)';
+                
+                if (navigator.vibrate) {
+                    navigator.vibrate([50, 100, 50]);
+                }
+                
+                setTimeout(() => {
+                    pinDisplay.style.animation = '';
+                    pinDisplay.style.color = '';
+                    clearPin();
+                }, 500);
+            }
+        }
+        
+        function logout() {
+            currentUser = null;
+            pinInput = '';
+            updatePinDisplay();
+            
+            document.getElementById('dashboard').classList.add('hidden');
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('analyticsBtn').style.display = 'none';
+            
+            // Reset all modules
+            resetMortalite();
+            resetAllInputs();
+        }
+        
+        // ===================================================================
+        // MODULE NAVIGATION
+        // ===================================================================
+        
+        let currentModule = 'mortalite';
+        
+        function switchModule(moduleName) {
+            // Hide all modules
+            document.querySelectorAll('[id^="module"]').forEach(el => {
+                el.classList.add('hidden');
+            });
+            
+            // Remove active state from all buttons
+            document.querySelectorAll('.module-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected module
+            document.getElementById(`module${moduleName}`).classList.remove('hidden');
+            
+            // Set active button
+            event.target.closest('.module-btn').classList.add('active');
+            
+            currentModule = moduleName;
+            
+            // Haptic feedback
+            if (navigator.vibrate) {
+                navigator.vibrate(15);
+            }
+            
+            lucide.createIcons();
+        }
+        
+        // ===================================================================
+        // MORTALITÉ 12-RANGS ANTI-CHEAT SYSTEM
+        // ===================================================================
+        
+        let currentRank = 1;
+        let mortaliteData = {
+            ranks: [],
+            totals: { normal: 0, ancien: 0, restes: 0, accident: 0 }
+        };
+        
+        function checkMortaliteInputs() {
+            const normal = parseInt(document.getElementById('mortaliteNormal').value) || 0;
+            const ancien = parseInt(document.getElementById('mortaliteAncien').value) || 0;
+            const restes = parseInt(document.getElementById('mortaliteRestes').value) || 0;
+            const accident = parseInt(document.getElementById('mortaliteAccident').value) || 0;
+            
+            const total = normal + ancien + restes + accident;
+            document.getElementById('rankTotal').textContent = total;
+            
+            // Enable next button only if at least one value is entered
+            const hasInput = normal > 0 || ancien > 0 || restes > 0 || accident > 0;
+            document.getElementById('nextRankBtn').disabled = !hasInput;
+            
+            // Calculate cumulative total
+            const cumulative = mortaliteData.totals.normal + mortaliteData.totals.ancien + 
+                              mortaliteData.totals.restes + mortaliteData.totals.accident + total;
+            document.getElementById('cumulativeTotal').textContent = cumulative;
+        }
+        
+        function nextRank() {
+            // Save current rank data
+            const normal = parseInt(document.getElementById('mortaliteNormal').value) || 0;
+            const ancien = parseInt(document.getElementById('mortaliteAncien').value) || 0;
+            const restes = parseInt(document.getElementById('mortaliteRestes').value) || 0;
+            const accident = parseInt(document.getElementById('mortaliteAccident').value) || 0;
+            
+            mortaliteData.ranks.push({
+                rank: currentRank,
+                normal, ancien, restes, accident,
+                total: normal + ancien + restes + accident
+            });
+            
+            // Update totals
+            mortaliteData.totals.normal += normal;
+            mortaliteData.totals.ancien += ancien;
+            mortaliteData.totals.restes += restes;
+            mortaliteData.totals.accident += accident;
+            
+            // Voice confirmation
+            speak(`Rang ${currentRank} validé. ${normal + ancien + restes + accident} décès enregistrés.`);
+            
+            // Check if all 12 ranks completed
+            if (currentRank === 12) {
+                showMortaliteSummary();
+                saveToIndexedDB('mortalite', mortaliteData);
+                return;
+            }
+            
+            // Move to next rank
+            currentRank++;
+            document.getElementById('currentRank').textContent = currentRank;
+            document.getElementById('nextRankNumber').textContent = currentRank + 1;
+            
+            // Update progress bar
+            const progress = (currentRank - 1) / 12 * 100;
+            document.getElementById('mortaliteProgress').style.width = `${progress}%`;
+            
+            // Clear inputs for next rank
+            document.getElementById('mortaliteNormal').value = '0';
+            document.getElementById('mortaliteAncien').value = '0';
+            document.getElementById('mortaliteRestes').value = '0';
+            document.getElementById('mortaliteAccident').value = '0';
+            document.getElementById('rankTotal').textContent = '0';
+            
+            // Disable next button until new input
+            document.getElementById('nextRankBtn').disabled = true;
+            
+            // Haptic feedback
+            if (navigator.vibrate) {
+                navigator.vibrate(30);
+            }
+        }
+        
+        function showMortaliteSummary() {
+            document.getElementById('mortaliteProgress').style.width = '100%';
+            
+            // Populate summary
+            document.getElementById('summaryNormal').textContent = mortaliteData.totals.normal;
+            document.getElementById('summaryAncien').textContent = mortaliteData.totals.ancien;
+            document.getElementById('summaryRestes').textContent = mortaliteData.totals.restes;
+            document.getElementById('summaryAccident').textContent = mortaliteData.totals.accident;
+            
+            const grandTotal = mortaliteData.totals.normal + mortaliteData.totals.ancien + 
+                              mortaliteData.totals.restes + mortaliteData.totals.accident;
+            document.getElementById('grandTotal').textContent = grandTotal;
+            
+            // Show summary, hide inputs
+            document.querySelector('.rank-grid').style.display = 'none';
+            document.getElementById('nextRankBtn').style.display = 'none';
+            document.getElementById('mortaliteSummary').classList.remove('hidden');
+            
+            // Green glow effect
+            document.getElementById('modulemortalite').classList.add('glow-green');
+            
+            // Success toast
+            showToast('✓ Saisie 12-Rangs Complète et Validée!');
+            
+            // Voice confirmation
+            speak(`Saisie terminée. Total de mortalité: ${grandTotal} volailles.`);
+        }
+        
+        function resetMortalite() {
+            currentRank = 1;
+            mortaliteData = {
+                ranks: [],
+                totals: { normal: 0, ancien: 0, restes: 0, accident: 0 }
+            };
+            
+            document.getElementById('currentRank').textContent = '1';
+            document.getElementById('nextRankNumber').textContent = '2';
+            document.getElementById('mortaliteProgress').style.width = '0%';
+            document.getElementById('cumulativeTotal').textContent = '0';
+            
+            document.querySelector('.rank-grid').style.display = 'grid';
+            document.getElementById('nextRankBtn').style.display = 'block';
+            document.getElementById('mortaliteSummary').classList.add('hidden');
+            document.getElementById('modulemortalite').classList.remove('glow-green');
+            
+            document.getElementById('mortaliteNormal').value = '0';
+            document.getElementById('mortaliteAncien').value = '0';
+            document.getElementById('mortaliteRestes').value = '0';
+            document.getElementById('mortaliteAccident').value = '0';
+            document.getElementById('rankTotal').textContent = '0';
+            document.getElementById('nextRankBtn').disabled = true;
+        }
+        
+        // ===================================================================
+        // ENVIRONNEMENTAL AI GUARD (Thermal Alert System)
+        // ===================================================================
+        
+        let thermalAlertActive = false;
+        
+        function checkTemperature() {
+            const intMin = parseFloat(document.getElementById('tempIntMin').value);
+            const intMax = parseFloat(document.getElementById('tempIntMax').value);
+            const extMin = parseFloat(document.getElementById('tempExtMin').value);
+            const extMax = parseFloat(document.getElementById('tempExtMax').value);
+            
+            const temps = [intMin, intMax, extMin, extMax].filter(t => !isNaN(t));
+            
+            // Check if any temperature exceeds 30°C
+            const criticalTemp = temps.some(t => t > 30);
+            
+            if (criticalTemp && !thermalAlertActive) {
+                activateThermalAlert();
+            } else if (!criticalTemp && thermalAlertActive) {
+                deactivateThermalAlert();
+            }
+        }
+        
+        function activateThermalAlert() {
+            thermalAlertActive = true;
+            
+            // Show alert banner
+            document.getElementById('thermalAlertBanner').classList.remove('hidden');
+            
+            // Make entire module pulse red
+            document.getElementById('moduleenvironnemental').classList.add('thermal-alert');
+            
+            // Play alert sound
+            const alertSound = document.getElementById('alertSound');
+            alertSound.play().catch(e => console.log('Audio playback failed'));
+            
+            // Text-to-Speech alert
+            speak('Alerte Température Critique! Température supérieure à 30 degrés détectée!');
+            
+            // Strong haptic feedback
+            if (navigator.vibrate) {
+                navigator.vibrate([200, 100, 200, 100, 200]);
+            }
+        }
+        
+        function deactivateThermalAlert() {
+            thermalAlertActive = false;
+            document.getElementById('thermalAlertBanner').classList.add('hidden');
+            document.getElementById('moduleenvironnemental').classList.remove('thermal-alert');
+        }
+        
+        function saveEnvironnemental() {
+            const data = {
+                timestamp: new Date().toISOString(),
+                intMin: parseFloat(document.getElementById('tempIntMin').value),
+                intMax: parseFloat(document.getElementById('tempIntMax').value),
+                extMin: parseFloat(document.getElementById('tempExtMin').value),
+                extMax: parseFloat(document.getElementById('tempExtMax').value),
+                humidity: parseFloat(document.getElementById('humidity').value)
+            };
+            
+            saveToIndexedDB('environnemental', data);
+            showToast('Données environnementales enregistrées!');
+            speak('Données environnementales sauvegardées.');
+        }
+        
+        // ===================================================================
+        // STOCK & SILO VISION (Photo-Verification System)
+        // ===================================================================
+        
+        let photoVerifications = {
+            silo1: false,
+            silo2: false,
+            water: false
+        };
+        
+        function previewPhoto(type) {
+            const input = document.getElementById(`${type}Photo`);
+            const preview = document.getElementById(`${type}Preview`);
+            
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.classList.remove('hidden');
+                    photoVerifications[type] = true;
+                    checkStockValidation();
+                    
+                    // Haptic feedback
+                    if (navigator.vibrate) {
+                        navigator.vibrate(50);
+                    }
+                };
+                
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        
+        function checkStockValidation() {
+            // Enable save button only if all 3 photos are taken
+            const allPhotosValid = photoVerifications.silo1 && 
+                                   photoVerifications.silo2 && 
+                                   photoVerifications.water;
+            
+            document.getElementById('saveStockBtn').disabled = !allPhotosValid;
+            
+            if (allPhotosValid) {
+                document.getElementById('saveStockBtn').classList.add('glow-green');
+            }
+        }
+        
+        function saveStock() {
+            const data = {
+                timestamp: new Date().toISOString(),
+                silo1: {
+                    level: parseFloat(document.getElementById('silo1Level').value),
+                    quantity: parseFloat(document.getElementById('silo1Quantity').value),
+                    photo: document.getElementById('silo1Preview').src
+                },
+                silo2: {
+                    level: parseFloat(document.getElementById('silo2Level').value),
+                    quantity: parseFloat(document.getElementById('silo2Quantity').value),
+                    photo: document.getElementById('silo2Preview').src
+                },
+                water: {
+                    consumption: parseFloat(document.getElementById('waterConsumption').value),
+                    photo: document.getElementById('waterPreview').src
+                }
+            };
+            
+            saveToIndexedDB('stock', data);
+            showToast('Stock et photos validés avec succès!');
+            speak('Vérification photographique complète. Données stock sauvegardées.');
+        }
+        
+        // ===================================================================
+        // PRODUCTION D'ŒUFS PRO (Auto-Calculation System)
+        // ===================================================================
+        
+        function calculateEggs() {
+            const bons = parseInt(document.getElementById('eggsBons').value) || 0;
+            const casses = parseInt(document.getElementById('eggsCasses').value) || 0;
+            const blancs = parseInt(document.getElementById('eggsBlancs').value) || 0;
+            const dechets = parseInt(document.getElementById('eggsDechets').value) || 0;
+            
+            // Total eggs
+            const total = bons + casses + blancs + dechets;
+            document.getElementById('totalEggs').textContent = total;
+            
+            // Calculate plateaux (30 eggs per plateau)
+            const plateaux = Math.floor(total / 30);
+            document.getElementById('plateaux').textContent = plateaux;
+            
+            // Calculate cartons (12 plateaux per carton = 360 eggs)
+            const cartons = Math.floor(total / 360);
+            document.getElementById('cartons').textContent = cartons;
+            
+            // Production rate (assuming 1000 birds - can be configured)
+            const productionRate = ((bons / 1000) * 100).toFixed(1);
+            document.getElementById('productionRate').textContent = `${productionRate}%`;
+        }
+        
+        function saveProduction() {
+            const data = {
+                timestamp: new Date().toISOString(),
+                bons: parseInt(document.getElementById('eggsBons').value) || 0,
+                casses: parseInt(document.getElementById('eggsCasses').value) || 0,
+                blancs: parseInt(document.getElementById('eggsBlancs').value) || 0,
+                dechets: parseInt(document.getElementById('eggsDechets').value) || 0,
+                total: parseInt(document.getElementById('totalEggs').textContent),
+                plateaux: parseInt(document.getElementById('plateaux').textContent),
+                cartons: parseInt(document.getElementById('cartons').textContent)
+            };
+            
+            saveToIndexedDB('production', data);
+            showToast('Production enregistrée avec succès!');
+            speak(`Production enregistrée. ${data.total} œufs, ${data.plateaux} plateaux.`);
+        }
+        
+        // ===================================================================
+        // ANALYTICS DASHBOARD (Admin Only)
+        // ===================================================================
+        
+        let mortalityChart, productionChart;
+        
+        function initializeCharts() {
+            // Mortality Chart
+            const mortalityCtx = document.getElementById('mortalityChart').getContext('2d');
+            mortalityChart = new Chart(mortalityCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jour 1', 'Jour 2', 'Jour 3', 'Jour 4', 'Jour 5', 'Jour 6', 'Jour 7'],
+                    datasets: [{
+                        label: 'Mortalité',
+                        data: generateMockData(7, 50, 200),
+                        borderColor: '#ff0055',
+                        backgroundColor: 'rgba(255, 0, 85, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { labels: { color: '#ffffff' } }
+                    },
+                    scales: {
+                        y: {
+                            ticks: { color: '#ffffff' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        },
+                        x: {
+                            ticks: { color: '#ffffff' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        }
+                    }
+                }
+            });
+            
+            // Production Chart
+            const productionCtx = document.getElementById('productionChart').getContext('2d');
+            productionChart = new Chart(productionCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Jour 1', 'Jour 2', 'Jour 3', 'Jour 4', 'Jour 5', 'Jour 6', 'Jour 7'],
+                    datasets: [{
+                        label: 'Production (œufs)',
+                        data: generateMockData(7, 8000, 12000),
+                        backgroundColor: 'rgba(0, 212, 255, 0.6)',
+                        borderColor: '#00d4ff',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { labels: { color: '#ffffff' } }
+                    },
+                    scales: {
+                        y: {
+                            ticks: { color: '#ffffff' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        },
+                        x: {
+                            ticks: { color: '#ffffff' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        }
+                    }
+                }
+            });
+            
+            // Update statistics
+            updateAnalyticsStats();
+        }
+        
+        function updateAnalyticsStats() {
+            document.getElementById('avgMortality').textContent = '142';
+            document.getElementById('avgTemp').textContent = '24.5°C';
+            document.getElementById('avgProduction').textContent = '9,847';
+            document.getElementById('fcrValue').textContent = '1.82';
+        }
+        
+        function generateMockData(count, min, max) {
+            return Array.from({ length: count }, () => 
+                Math.floor(Math.random() * (max - min + 1)) + min
+            );
+        }
+        
+        // ===================================================================
+        // OFFLINE-FIRST RESILIENCE (IndexedDB)
+        // ===================================================================
+        
+        let db;
+        
+        function initIndexedDB() {
+            const request = indexedDB.open('AvicoleProDB', 1);
+            
+            request.onerror = () => console.error('IndexedDB error');
+            
+            request.onsuccess = (event) => {
+                db = event.target.result;
+                console.log('IndexedDB initialized');
+            };
+            
+            request.onupgradeneeded = (event) => {
+                db = event.target.result;
+                
+                // Create object stores
+                if (!db.objectStoreNames.contains('mortalite')) {
+                    db.createObjectStore('mortalite', { keyPath: 'timestamp' });
+                }
+                if (!db.objectStoreNames.contains('environnemental')) {
+                    db.createObjectStore('environnemental', { keyPath: 'timestamp' });
+                }
+                if (!db.objectStoreNames.contains('stock')) {
+                    db.createObjectStore('stock', { keyPath: 'timestamp' });
+                }
+                if (!db.objectStoreNames.contains('production')) {
+                    db.createObjectStore('production', { keyPath: 'timestamp' });
+                }
+            };
+        }
+        
+        function saveToIndexedDB(storeName, data) {
+            if (!db) {
+                console.error('IndexedDB not initialized');
+                return;
+            }
+            
+            data.timestamp = data.timestamp || new Date().toISOString();
+            
+            const transaction = db.transaction([storeName], 'readwrite');
+            const objectStore = transaction.objectStore(storeName);
+            const request = objectStore.add(data);
+            
+            request.onsuccess = () => {
+                console.log(`Data saved to ${storeName}`);
+                
+                // Attempt sync if online
+                if (navigator.onLine) {
+                    syncDataToServer(storeName, data);
+                }
+            };
+            
+            request.onerror = () => {
+                console.error(`Error saving to ${storeName}`);
+            };
+        }
+        
+        function syncDataToServer(storeName, data) {
+            // This would connect to your backend API
+            console.log(`Syncing ${storeName} to server:`, data);
+            
+            // Example API call (replace with actual endpoint)
+            /*
+            fetch('/api/sync', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ store: storeName, data: data })
+            })
+            .then(response => response.json())
+            .then(result => console.log('Sync successful', result))
+            .catch(error => console.error('Sync failed', error));
+            */
+        }
+        
+        // ===================================================================
+        // VOICE UI (Web Speech API)
+        // ===================================================================
+        
+        function speak(text) {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'fr-FR';
+                utterance.rate = 1.0;
+                utterance.pitch = 1.0;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+        
+        // ===================================================================
+        // UTILITY FUNCTIONS
+        // ===================================================================
+        
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMessage').textContent = message;
+            
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+        
+        function resetAllInputs() {
+            document.querySelectorAll('.cyber-input').forEach(input => {
+                if (input.type === 'number') {
+                    input.value = '0';
+                } else {
+                    input.value = '';
+                }
+            });
+        }
+        
+        // Add shake animation to styles
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                25% { transform: translateX(-10px); }
+                75% { transform: translateX(10px); }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // ===================================================================
+        // SERVICE WORKER REGISTRATION (PWA)
+        // ===================================================================
+        
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => console.log('ServiceWorker registered'))
+                    .catch(err => console.log('ServiceWorker registration failed'));
+            });
+        }
+        
+        // Online/Offline detection
+        window.addEventListener('online', () => {
+            showToast('✓ Connexion rétablie - Synchronisation...');
+        });
+        
+        window.addEventListener('offline', () => {
+            showToast('⚠ Mode Hors-ligne - Données sauvegardées localement');
+        });
+        
+        // ===================================================================
+        // INITIALIZATION
+        // ===================================================================
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            initIndexedDB();
+            lucide.createIcons();
+            updatePinDisplay();
+        });
+        
+    </script>
+</body>
+</html>

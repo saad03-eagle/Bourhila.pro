@@ -1,0 +1,42 @@
+{
+  "name": "Avicole Pro - Coprogal/Galipro",
+  "short_name": "Avicole Pro",
+  "description": "Professional poultry management system with zero-paper workflow",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0e27",
+  "theme_color": "#00d4ff",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect fill='%230a0e27' width='512' height='512'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-size='280' fill='%2300d4ff'%3E🐔%3C/text%3E%3C/svg%3E",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect fill='%230a0e27' width='512' height='512'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-size='280' fill='%2300d4ff'%3E🐔%3C/text%3E%3C/svg%3E",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ],
+  "categories": ["business", "productivity"],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Mortalité",
+      "url": "/?module=mortalite",
+      "description": "Enregistrer mortalité 12-rangs"
+    },
+    {
+      "name": "Production",
+      "url": "/?module=production",
+      "description": "Saisie production d'œufs"
+    },
+    {
+      "name": "Stock",
+      "url": "/?module=stock",
+      "description": "Vérification stock et silos"
+    }
+  ],
+  "prefer_related_applications": false
+}
